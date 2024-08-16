@@ -1,0 +1,23 @@
+[
+    {
+        "nombre": "John",
+        "apellido": "Doe",
+        "fecha_nacimiento": "1990/05/14",
+        "correo": "john.doe@example.com",
+        "contrasena": "password123"
+    },
+    {
+        "nombre": "Jane",
+        "apellido": "Smith",
+        "fecha_nacimiento": "1895/08/14",
+        "correo": "jane.smith@example.com",
+        "contrasena": "securepass456"
+    },
+    {
+        "nombre": "Alice",
+        "apellido": "Johnson",
+        "fecha_nacimiento": "1992/08/30",
+        "correo": "alice.johnson@example.com",
+        "contrasena": "mypassword789"
+    }
+]

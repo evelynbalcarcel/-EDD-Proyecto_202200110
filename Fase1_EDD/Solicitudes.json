@@ -1,0 +1,17 @@
+[
+    {
+        "emisor": "john.doe@example.com",
+        "receptor": "jane.smith@example.com",
+        "estado": "ACEPTADA"
+    },
+    {
+        "emisor": "alice.johnson@example.com",
+        "receptor": "john.doe@example.com",
+        "estado": "PENDIENTE"
+    },
+    {
+        "emisor": "jane.smith@example.com",
+        "receptor": "alice.johnson@example.com",
+        "estado": "PENDIENTE"
+    }
+]

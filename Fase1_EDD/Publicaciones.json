@@ -1,0 +1,20 @@
+[
+    {
+        "correo": "john.doe@example.com",
+        "contenido": "This is John's first post.",
+        "fecha": "27/07/2024",
+        "hora": "10:00"
+    },
+    {
+        "correo": "jane.smith@example.com",
+        "contenido": "Hello world! This is Jane.",
+        "fecha": "22/07/2024",
+        "hora": "12:30"
+    },
+    {
+        "correo": "alice.johnson@example.com",
+        "contenido": "Good morning everyone!",
+        "fecha": "23/07/2024",
+        "hora": "08:45"
+    }
+]
