@@ -123,7 +123,7 @@ void adminMenu(ListaU& listaUsuarios) {
     } while (option != 6);
 }
 
-void userMenu(ListaU& listaUsuarios, const string& email) {
+void userMenu(ListaU& listaUsuarios,  const string& email) {
     int option;
     do {
         cout << "\n--- MODULO USUARIO ---\n";
@@ -210,6 +210,7 @@ void userMenu(ListaU& listaUsuarios, const string& email) {
                 }
                 break;
             }
+            // Asumiendo que `publicaciones` es una instancia global o pasada a la función
             case 3: {
                 cout << "_____Publicaciones_____\n";
                 cout << "1. Ver todas\n";
@@ -218,16 +219,17 @@ void userMenu(ListaU& listaUsuarios, const string& email) {
                 int pubOption;
                 cin >> pubOption;
                 cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
+
                 if (pubOption == 1) {
-                    listaUsuarios.viewPosts();
+                    PublicacionesU::viewPosts();
                 } else if (pubOption == 2) {
-                    listaUsuarios.createPost(email);
+                    PublicacionesU::createPost(email);
                 } else if (pubOption == 3) {
                     int postId;
-                    cout << "Ingrese el ID de la publicacion a eliminar: ";// el conteo empieza en 0
+                    cout << "Ingrese el ID de la publicacion a eliminar: "; // El conteo empieza en 0
                     cin >> postId;
                     cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
-                    if (listaUsuarios.deletePost(postId)) {
+                    if (PublicacionesU::deletePost(postId)) {
                         cout << "Publicación eliminada.\n";
                     } else {
                         cout << "Error al eliminar la publicacion.\n";
@@ -237,6 +239,8 @@ void userMenu(ListaU& listaUsuarios, const string& email) {
                 }
                 break;
             }
+
+
             case 4:
                 listaUsuarios.generateReports();
                 break;

@@ -1,7 +1,7 @@
 // ListaUsuarios.h
 #ifndef LISTAUSUARIOS_H
 #define LISTAUSUARIOS_H
-
+#include <string>
 #include <iostream>
 #include <vector>
 #include <stack>
@@ -11,6 +11,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
+using namespace std;
 
 class SolicitudesU {
 public:
@@ -23,7 +24,7 @@ public:
     SolicitudesU(const std::string& nombre, const std::string& correo) 
         : nombre(nombre), correo(correo) {}
 };
-
+// Clase principal para manejar usuarios y solicitudes
 class ListaU {
 private:
     struct Node {
@@ -36,18 +37,10 @@ private:
         std::string estado;
         Solicitud* siguiente;
     };
-    struct Publicacion {
-    int postId; // Agregar identificador único
-    std::string correo;
-    std::string contenido;
-    std::string fecha;
-    std::string hora;
-    Publicacion* siguiente;
-    Publicacion* anterior;
-};
+    
     Node* head;
     Solicitud* solicitudes;
-    Publicacion* publicaciones;
+
 
     Node* findUser(const std::string& email);
 
@@ -64,7 +57,7 @@ public:
     bool login(const std::string& email, const std::string& password);
     void registerUser();
     bool deleteAccount(const std::string& email, const std::string& password);
-    void loadUsers();
+    void loadUsers(); // cargar usuarios en el modulo admin
     void loadRelations();
     void loadPosts();
     void manageUsers();
@@ -72,10 +65,12 @@ public:
     void viewProfile(const std::string& email);
     void viewRequests();
     void sendRequest();
-    void viewPosts();
-    void createPost(const std::string& email);
-    bool deletePost(int postId);
     void viewFriends();
+    void viewPosts();
+    void createPost(const string& email);
+    bool deletePost(int postId);
+
+
 };
 
 #endif // LISTAUSUARIOS_H

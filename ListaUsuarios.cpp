@@ -2,8 +2,10 @@
 #include <vector>
 #include <stack>
 #include <algorithm>
+#include <string>
 #include "ListaUsuarios.h"
 #include "Usuarios.h"
+#include "PublicacionesU.h"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -11,19 +13,7 @@
 using json = nlohmann::json;
 using namespace std;
 
-int nextPostId = 0; // Variable global para asignar identificadores únicos a las publicaciones
-
-
 // Definición de las clases Publicacion y Solicitud si no están definidas en otro archivo
-struct Publicacion {
-    std::string correo;
-    std::string contenido;
-    std::string fecha;
-    std::string hora;
-    Publicacion* siguiente;
-    Publicacion* anterior;
-};
-
 struct Solicitud {
     std::string emisor;
     std::string receptor;
@@ -31,7 +21,7 @@ struct Solicitud {
     Solicitud* siguiente;
 };
 
-ListaU::ListaU() : head(nullptr), solicitudes(nullptr), publicaciones(nullptr) {
+ListaU::ListaU() : head(nullptr), solicitudes(nullptr){
 }
 
 ListaU::~ListaU() {
@@ -49,12 +39,6 @@ ListaU::~ListaU() {
         solicitudActual = siguienteSolicitud;
     }
 
-    Publicacion* publicacionActual = publicaciones;
-    while (publicacionActual != nullptr) {
-        Publicacion* siguientePublicacion = publicacionActual->siguiente;
-        delete publicacionActual;
-        publicacionActual = siguientePublicacion;
-    }
 }
 
 bool ListaU::login(const string& email, const string& password) {
@@ -179,53 +163,111 @@ bool ListaU::rechazarSolicitud(const std::string& remitente, const std::string& 
     return false;
 }
 
+// --------------------------cargar usuarios----------------------------------------
 void ListaU::loadUsers() {
-    std::ifstream usersFile("Usuarios.json");
+    std::string filePath;
+    std::cout << "Ingrese la ruta del archivo de usuarios (Usuarios.json): ";
+    std::getline(std::cin, filePath);
+
+    std::ifstream usersFile(filePath);
     if (!usersFile.is_open()) {
-        std::cerr << "Error al abrir el archivo de usuarios: Usuarios.json" << std::endl;
+        std::cerr << "Error al abrir el archivo de usuarios: " << filePath << std::endl;
         return;
     }
+    // Leer el contenido del archivo en una cadena
+    std::string fileContent((std::istreambuf_iterator<char>(usersFile)), std::istreambuf_iterator<char>());
+    // Mostrar el contenido del archivo en la consola
+    std::cout << "Contenido del archivo:\n" << fileContent << std::endl;
+
+    // Volver al inicio del archivo para procesar el JSON
+    usersFile.clear();
+    usersFile.seekg(0, std::ios::beg);
 
     json root;
-    usersFile >> root;
+    try {
+        usersFile >> root;
+    } catch (json::parse_error& e) {
+        std::cerr << "Error al parsear el archivo de usuarios: " << e.what() << std::endl;
+        return;
+    }
 
     for (const auto& userJson : root) {
-        User user(
-            userJson["nombre"].get<std::string>(),
-            userJson["apellido"].get<std::string>(),
-            userJson["fechaNacimiento"].get<std::string>(),
-            userJson["correo"].get<std::string>(),
-            userJson["contraseña"].get<std::string>()
-        );
-        addUser(user);
-    }
-    cout << "Usuarios cargados exitosamente.\n";
-}
+        try {
+            if (userJson.contains("nombre") && userJson.contains("apellido") && 
+                userJson.contains("fecha_nacimiento") && userJson.contains("correo") && 
+                userJson.contains("contrasena")) {
 
+                User user(
+                    userJson["nombre"].get<std::string>(),
+                    userJson["apellido"].get<std::string>(),
+                    userJson["fecha_nacimiento"].get<std::string>(),
+                    userJson["correo"].get<std::string>(),
+                    userJson["contrasena"].get<std::string>()
+                );
+                addUser(user);
+            } else {
+                std::cerr << "Error: faltan claves en el objeto JSON: " << userJson << std::endl;
+            }
+        } catch (json::type_error& e) {
+            std::cerr << "Error de tipo al procesar el archivo de usuarios: " << e.what() << std::endl;
+        }
+    }
+    std::cout << "Usuarios cargados exitosamente.\n";
+}
+//----------------------Cargar solicitues/ relaciones desde admin-----------------------
 void ListaU::loadRelations() {
-    std::ifstream requestsFile("Solicitudes.json");
+    std::string filePath;
+    std::cout << "Ingrese la ruta del archivo de solicitudes (Solicitudes.json): ";
+    std::getline(std::cin, filePath);
+
+    std::ifstream requestsFile(filePath);
     if (!requestsFile.is_open()) {
-        std::cerr << "Error al abrir el archivo de solicitudes: Solicitudes.json" << std::endl;
+        std::cerr << "Error al abrir el archivo de solicitudes: " << filePath << std::endl;
         return;
     }
 
+    // Leer el contenido del archivo en una cadena
+    std::string fileContent((std::istreambuf_iterator<char>(requestsFile)), std::istreambuf_iterator<char>());
+    // Mostrar el contenido del archivo en la consola
+    std::cout << "Contenido del archivo:\n" << fileContent << std::endl;
+
+    // Volver al inicio del archivo para procesar el JSON
+    requestsFile.clear();
+    requestsFile.seekg(0, std::ios::beg);
+
     json root;
-    requestsFile >> root;
+    try {
+        requestsFile >> root;
+    } catch (json::parse_error& e) {
+        std::cerr << "Error al parsear el archivo de solicitudes: " << e.what() << std::endl;
+        return;
+    }
 
     for (const auto& requestJson : root) {
-        Solicitud* solicitud = new Solicitud{
-            requestJson["emisor"].get<std::string>(),
-            requestJson["receptor"].get<std::string>(),
-            requestJson["estado"].get<std::string>(),
-            nullptr
-        };
+        try {
+            if (requestJson.contains("emisor") && requestJson.contains("receptor") && 
+                requestJson.contains("estado")) {
 
-        solicitud->siguiente = solicitudes;
-        solicitudes = solicitud;
+                Solicitud* solicitud = new Solicitud{
+                    requestJson["emisor"].get<std::string>(),
+                    requestJson["receptor"].get<std::string>(),
+                    requestJson["estado"].get<std::string>(),
+                    nullptr
+                };
+
+                solicitud->siguiente = solicitudes;
+                solicitudes = solicitud;
+            } else {
+                std::cerr << "Error: faltan claves en el objeto JSON: " << requestJson << std::endl;
+            }
+        } catch (json::type_error& e) {
+            std::cerr << "Error de tipo al procesar el archivo de solicitudes: " << e.what() << std::endl;
+        }
     }
-    cout << "Solicitudes cargadas exitosamente.\n";
+    std::cout << "Solicitudes cargadas exitosamente.\n";
 }
 
+//--------------------------Carga de publicaciones admin----------------------------
 void ListaU::loadPosts() {
     std::string filePath;
     std::cout << "Ingrese la ruta del archivo JSON de publicaciones: ";
@@ -236,6 +278,15 @@ void ListaU::loadPosts() {
         std::cerr << "No se pudo abrir el archivo.\n";
         return;
     }
+    // Leer el contenido del archivo en una cadena
+    std::string fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
+    // Mostrar el contenido del archivo en la consola
+    std::cout << "Contenido del archivo:\n" << fileContent << std::endl;
+
+    // Volver al inicio del archivo para procesar el JSON
+    inputFile.clear();
+    inputFile.seekg(0, std::ios::beg);
+
 
     nlohmann::json jsonData;
     inputFile >> jsonData;
@@ -245,19 +296,7 @@ void ListaU::loadPosts() {
         std::string content = post["contenido"];
         std::string date = post["fecha"];
         std::string time = post["hora"];
-
-        // Asignar un nuevo ID para cada publicación
-        Publicacion* newPost = new Publicacion{nextPostId++, email, content, date, time, nullptr, nullptr};
-        if (publicaciones == nullptr) {
-            publicaciones = newPost;
-        } else {
-            Publicacion* temp = publicaciones;
-            while (temp->siguiente != nullptr) {
-                temp = temp->siguiente;
-            }
-            temp->siguiente = newPost;
-            newPost->anterior = temp;
-        }
+       
     }
 
     std::cout << "Publicaciones cargadas exitosamente.\n";
@@ -334,66 +373,17 @@ void ListaU::viewFriends() {
     }
 }
 
+// Aquí deberías tener la instancia de PublicacionesU
+PublicacionesU publicaciones;
 
-void ListaU::createPost(const std::string& email) {
-    std::string content, date, time;
-    std::cout << "Ingrese el contenido de la publicacion: ";
-    std::getline(std::cin, content);
-    std::cout << "Ingrese la fecha de la publicacion (YYYY-MM-DD): ";
-    std::getline(std::cin, date);
-    std::cout << "Ingrese la hora de la publicacion (HH:MM): ";
-    std::getline(std::cin, time);
+void ListaU::viewPosts() {
+    publicaciones.viewPosts();
+}
 
-    Publicacion* newPost = new Publicacion{nextPostId++, email, content, date, time, nullptr, nullptr};
-
-    if (publicaciones == nullptr) {
-        publicaciones = newPost;
-    } else {
-        Publicacion* temp = publicaciones;
-        while (temp->siguiente != nullptr) {
-            temp = temp->siguiente;
-        }
-        temp->siguiente = newPost;
-        newPost->anterior = temp;
-    }
-    std::cout << "Publicacion creada exitosamente.\n";
+void ListaU::createPost(const string& email) {
+    publicaciones.createPost(email);
 }
 
 bool ListaU::deletePost(int postId) {
-    Publicacion* current = publicaciones;
-
-    // Buscar la publicación con el postId dado
-    while (current != nullptr) {
-        if (current->postId == postId) {
-            // Ajustar punteros para eliminar el nodo de la lista
-            if (current->anterior) {
-                current->anterior->siguiente = current->siguiente;
-            } else {
-                publicaciones = current->siguiente; // Si es el primer nodo
-            }
-            if (current->siguiente) {
-                current->siguiente->anterior = current->anterior;
-            }
-            delete current; // Liberar la memoria del nodo
-            std::cout << "Publicación eliminada exitosamente.\n";
-            return true; // Eliminación exitosa
-        }
-        current = current->siguiente;
-    }
-
-    std::cout << "No se encontró una publicación con el ID especificado.\n";
-    return false; // No se encontró el postId
-}
-
-
-void ListaU::viewPosts() {
-    Publicacion* current = publicaciones;
-    while (current != nullptr) {
-        std::cout << "Correo: " << current->correo << "\n"
-                  << "Contenido: " << current->contenido << "\n"
-                  << "Fecha: " << current->fecha << "\n"
-                  << "Hora: " << current->hora << "\n"
-                  << "----------------------\n";
-        current = current->siguiente;
-    }
+    return publicaciones.deletePost(postId);
 }
