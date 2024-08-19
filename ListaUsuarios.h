@@ -13,6 +13,34 @@
 using json = nlohmann::json;
 using namespace std;
 
+//_______________________________________________________________________________________
+class CargaU {
+public:
+    std::string nombre;
+    std::string apellido;
+    std::string fechaNacimiento;
+    std::string correo;
+    std::string contrasena;
+
+    CargaU(const std::string& nombre, const std::string& apellido, const std::string& fechaNacimiento, 
+         const std::string& correo, const std::string& contrasena)
+        : nombre(nombre), apellido(apellido), fechaNacimiento(fechaNacimiento), correo(correo), contrasena(contrasena) {}
+
+    std::string getEmail() const { return correo; }
+    std::string getName() const { return nombre + " " + apellido; }
+};
+
+class CargaP {
+public:
+    std::string email;
+    std::string content;
+    std::string date;
+    std::string time;
+
+    CargaP(const std::string& email, const std::string& content, const std::string& date, const std::string& time)
+        : email(email), content(content), date(date), time(time) {}
+};
+//_______________________________________________________________________________________
 class SolicitudesU {
 public:
     std::string nombre;
@@ -47,6 +75,10 @@ private:
 public:
     ListaU();
     ~ListaU();
+    //__________________________________________________________
+    std::vector<CargaU> users;  // Para almacenar usuarios
+    std::vector<CargaU> posts;  // Para almacenar publicaciones
+    //____________________________________________________________
     std::vector<SolicitudesU> usuarios;
     bool matrizAmistad[100][100] = { false }; // Máximo 100 usuarios
 

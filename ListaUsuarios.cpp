@@ -7,8 +7,9 @@
 #include "Usuarios.h"
 #include "PublicacionesU.h"
 
+
 #include <fstream>
-#include <nlohmann/json.hpp>
+
 
 using json = nlohmann::json;
 using namespace std;
@@ -307,8 +308,9 @@ void ListaU::manageUsers() {
     // Implementar la gestión de usuarios si es necesario
 }
 
+// Implementación de generateReports
 void ListaU::generateReports() {
-    // Implementar la generación de reportes si es necesario
+    
 }
 
 void ListaU::viewProfile(const string& email) {

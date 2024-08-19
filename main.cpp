@@ -4,6 +4,11 @@
 #include "ListaUsuarios.h"
 #include "Usuarios.h"
 #include "PublicacionesU.h"
+using json = nlohmann::json;
+
+//Flatan los reportes y la matriz de relaciones - matriz de amistad
+//Seria mejor seguir con la matriz sobre aceptar solicitudes 
+//ptm tengo que revisar las publicaicones porque no estan bien :(((
 
 using namespace std;
 
