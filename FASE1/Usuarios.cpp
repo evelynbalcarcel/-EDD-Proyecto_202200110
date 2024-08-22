@@ -19,6 +19,9 @@ std::string User::getFirstName() const {
 std::string User::getLastName() const {
     return lastName;
 }
+std::string User::getBirthDate() const {
+    return this->birthDate; // Suponiendo que 'birthDate' es un atributo de tipo 'std::string'
+}
 
 void User::printInfo() const {
     std::cout << "Nombre: " << firstName << " " << lastName << std::endl;

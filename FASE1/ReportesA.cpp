@@ -7,7 +7,7 @@
 #include <vector>
 #include <algorithm>
 #include <nlohmann/json.hpp>
-
+#include "PublicacionesU.h"
 using namespace std;
 
 static void writeGraphToFile(const string& filename, const string& content) {
@@ -31,9 +31,9 @@ void ReportesA::generateUserReport(const ListaU& listaUsuarios) {
     file << "    node [shape=rectangle];\n";
 
     // Agregar nodos para cada usuario
-    for (const auto& user : listaUsuarios.users) {
-        file << "    \"" << user.getEmail() << "\" [label=\"" << user.getName() << "\"];\n";
-    }
+    //for (const auto& user : listaUsuarios.users) {
+    //    file << "    \"" << user.getEmail() << "\" [label=\"" << user.getName() << "\"];\n";
+    //}
 
     // Agregar relaciones de amistad
     // Implementa esto según cómo estés gestionando las amistades en tu matriz
@@ -46,7 +46,7 @@ void ReportesA::generateUserReport(const ListaU& listaUsuarios) {
     //     }
     // }
 
-    file << "}\n";
-    file.close();
+    //file << "}\n";
+    //ile.close();
 }
 

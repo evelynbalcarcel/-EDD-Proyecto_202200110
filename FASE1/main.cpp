@@ -4,16 +4,14 @@
 #include "ListaUsuarios.h"
 #include "Usuarios.h"
 #include "PublicacionesU.h"
+#include "MatrizAmistad.h"
+
 using json = nlohmann::json;
-
-//Flatan los reportes y la matriz de relaciones - matriz de amistad
-//Seria mejor seguir con la matriz sobre aceptar solicitudes 
-//ptm tengo que revisar las publicaicones porque no estan bien :(((
-
 using namespace std;
 
 void adminMenu(ListaU& listaUsuarios);
 void userMenu(ListaU& listaUsuarios, const string& email);
+PublicacionesU publicaciones;
 
 int main() {
     ListaU listaUsuarios;
@@ -21,11 +19,11 @@ int main() {
     // Agregar Usuario Administrador 
     listaUsuarios.addUser(User("Admin", "Admin", "01-01-1970", "admin@gmail.com", "EDD2S2024"));
 
-    int option;
+    int option;    
     string email, password;
     
     do {
-        cout << "\n--- INTERFAZ PRINCIPAL ---\n";
+        cout << "\n------ INTERFAZ PRINCIPAL ------\n";
         cout << "1. Iniciar sesion\n";
         cout << "2. Registrarse\n";
         cout << "3. Informacion\n";
@@ -42,7 +40,9 @@ int main() {
                 getline(cin, password);
                 if (listaUsuarios.login(email, password)) {
                     if (email == "admin@gmail.com" && password == "EDD2S2024") {
-                        cout << "Inicio de sesion como administrador exitoso.\n";
+                        cout << " ____________________________________________\n";
+                        cout << "|Inicio de sesion como administrador exitoso.|\n";
+                        cout << "|____________________________________________|\n";
                         adminMenu(listaUsuarios);
                     } else {
                         cout << "Inicio de sesion exitoso.\n";
@@ -69,66 +69,10 @@ int main() {
     return 0;
 }
 
-void adminMenu(ListaU& listaUsuarios) {
-    int option;
-    do {
-        cout << "\n--- MODULO ADMINISTRADOR ---\n";
-        cout << "1. Cargar usuarios\n";
-        cout << "2. Cargar relaciones\n";
-        cout << "3. Cargar publicaciones\n";
-        cout << "4. Gestionar usuarios\n";
-        cout << "   a. Eliminar usuarios\n";
-        cout << "5. Reportes\n";
-        cout << "6. Salir\n";
-        cout << "Seleccione una opcion: ";
-        cin >> option;
-        cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
-
-        switch (option) {
-            case 1:
-                listaUsuarios.loadUsers();
-                break;
-            case 2:
-                listaUsuarios.loadRelations();
-                break;
-            case 3:
-                listaUsuarios.loadPosts();
-                break;
-            case 4:
-                cout << "_____Gestionar usuarios_____\n";
-                cout << "1. Eliminar usuarios\n";
-                cout << "Seleccione una opcion: ";
-                char subOption;
-                cin >> subOption;
-                cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
-                if (subOption == '1') {
-                    string email, password;
-                    cout << "Ingrese el correo del usuario a eliminar: ";
-                    getline(cin, email);
-                    cout << "Ingrese la contrasena del usuario a eliminar: ";
-                    getline(cin, password);
-                    if (listaUsuarios.deleteAccount(email, password)) {
-                        cout << "Usuario eliminado correctamente.\n";
-                    } else {
-                        cout << "Error al eliminar el usuario.\n";
-                    }
-                } else {
-                    cout << "Opción no valida.\n";
-                }
-                break;
-            case 5:
-                listaUsuarios.generateReports();
-                break;
-            case 6:
-                cout << "Saliendo del módulo administrador...\n";
-                break;
-            default:
-                cout << "Opción no valida.\n";
-        }
-    } while (option != 6);
-}
-
-void userMenu(ListaU& listaUsuarios,  const string& email) {
+void userMenu(ListaU& listaUsuarios, const std::string& email) {
+    MatrizAmistad& matrizAmistad = listaUsuarios.matrizAmistad;  // Acceder directamente a la matriz de amistad
+    
+    
     int option;
     do {
         cout << "\n--- MODULO USUARIO ---\n";
@@ -137,13 +81,13 @@ void userMenu(ListaU& listaUsuarios,  const string& email) {
         cout << "3. Publicaciones\n";        
         cout << "4. Reportes\n";
         cout << "5. Salir\n";
-        cout << "Seleccione una opción: ";
+        cout << "Seleccione una opciOn: ";
         cin >> option;
         cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
 
         switch (option) {
             case 1: {
-                cout << "_____Perfil_____\n";
+                cout << "_______Perfil_______\n";
                 cout << "1. Ver perfil\n";
                 cout << "2. Eliminar cuenta\n";
                 char subOption;
@@ -153,7 +97,7 @@ void userMenu(ListaU& listaUsuarios,  const string& email) {
                     listaUsuarios.viewProfile(email);
                 } else if (subOption == '2') {
                     string password;
-                    cout << "Contraseña: ";
+                    cout << "Contrasena: ";
                     getline(cin, password);
                     if (listaUsuarios.deleteAccount(email, password)) {
                         cout << "Cuenta eliminada.\n";
@@ -167,7 +111,7 @@ void userMenu(ListaU& listaUsuarios,  const string& email) {
                 break;
             }
             case 2: {
-                cout << "_____Solicitudes_____\n";
+                cout << "_______Solicitudes_______\n";
                 cout << "1. Ver solicitudes\n";
                 cout << "2. Enviar solicitud\n";
                 int reqOption;
@@ -217,43 +161,105 @@ void userMenu(ListaU& listaUsuarios,  const string& email) {
             }
             // Asumiendo que `publicaciones` es una instancia global o pasada a la función
             case 3: {
-                cout << "_____Publicaciones_____\n";
-                cout << "1. Ver todas\n";
-                cout << "2. Crear\n";
-                cout << "3. Eliminar\n";
                 int pubOption;
-                cin >> pubOption;
-                cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
-
-                if (pubOption == 1) {
-                    PublicacionesU::viewPosts();
-                } else if (pubOption == 2) {
-                    PublicacionesU::createPost(email);
-                } else if (pubOption == 3) {
-                    int postId;
-                    cout << "Ingrese el ID de la publicacion a eliminar: "; // El conteo empieza en 0
-                    cin >> postId;
+                do {
+                    cout << "_______Publicaciones_______\n";
+                    cout << "1. Ver todas\n";
+                    cout << "2. Crear\n";
+                    cout << "3. Eliminar\n";
+                    cout << "4. Regresar\n";
+                    cin >> pubOption;
                     cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
-                    if (PublicacionesU::deletePost(postId)) {
-                        cout << "Publicación eliminada.\n";
-                    } else {
-                        cout << "Error al eliminar la publicacion.\n";
+
+                    if (pubOption == 1) {
+                        publicaciones.viewPosts(email, matrizAmistad);  // Pasar el email del usuario actual y la matriz de amistades
+                    } else if (pubOption == 2) {
+                        publicaciones.createPost(email);  // Crear una publicación para el usuario actual
+                    } else if (pubOption == 3) {
+                        int postId;
+                        cout << "Ingrese el ID de la publicación a eliminar: "; // El conteo empieza en 0
+                        cin >> postId;
+                        cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
+                        if (publicaciones.deletePost(postId)) {
+                            cout << "Publicación eliminada.\n";
+                        } else {
+                            cout << "Error al eliminar la publicación.\n";
+                        }
+                    } else if (pubOption != 4) {
+                        cout << "Opción no válida.\n";
                     }
-                } else {
-                    cout << "Opcion no valida.\n";
-                }
+                } while (pubOption != 4);
                 break;
             }
-
-
             case 4:
                 listaUsuarios.generateReports();
                 break;
             case 5:
-                cout << "Saliendo del menú usuario.\n";
+                cout << "Saliendo del menu usuario.\n";
+                cout << "___________________________\n";
                 break;
             default:
                 cout << "Opcion no valida.\n";
         }
     } while (option != 5);
+}
+
+void adminMenu(ListaU& listaUsuarios) {
+    int option;
+    do {
+        cout << "\n------ MODULO ADMINISTRADOR ------\n";
+        cout << "1. Cargar usuarios\n";
+        cout << "2. Cargar relaciones\n";
+        cout << "3. Cargar publicaciones\n";
+        cout << "4. Gestionar usuarios\n";
+        cout << "   a. Eliminar usuarios\n";
+        cout << "5. Reportes\n";
+        cout << "6. Salir\n";
+        cout << "Seleccione una opcion: ";
+        cin >> option;
+        cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
+
+        switch (option) {
+            case 1:
+                listaUsuarios.loadUsers();
+                break;
+            case 2:
+                listaUsuarios.loadRelations();
+                break;
+            case 3:
+                
+                listaUsuarios.loadPosts(publicaciones);
+                break;
+            case 4:
+                cout << "_______Gestionar usuarios_______\n";
+                cout << "1. Eliminar usuarios\n";
+                cout << "Seleccione una opcion: ";
+                char subOption;
+                cin >> subOption;
+                cin.ignore(); // Para consumir el salto de línea después de ingresar la opción
+                if (subOption == '1') {
+                    string email, password;
+                    cout << "Ingrese el correo del usuario a eliminar: ";
+                    getline(cin, email);
+                    cout << "Ingrese la contrasena del usuario a eliminar: ";
+                    getline(cin, password);
+                    if (listaUsuarios.deleteAccount(email, password)) {
+                        cout << "Usuario eliminado correctamente.\n";
+                    } else {
+                        cout << "Error al eliminar el usuario.\n";
+                    }
+                } else {
+                    cout << "Opcion no valida.\n";
+                }
+                break;
+            case 5:
+                listaUsuarios.generateReports();
+                break;
+            case 6:
+                cout << "Saliendo del modulo administrador...\n";
+                break;
+            default:
+                cout << "Opcion no valida.\n";
+        }
+    } while (option != 6);
 }

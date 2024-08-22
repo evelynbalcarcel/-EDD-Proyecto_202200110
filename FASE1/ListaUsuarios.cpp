@@ -1,28 +1,23 @@
+//ListaUsuarios.cpp:
 #include <iostream>
 #include <vector>
 #include <stack>
+#include <list>
 #include <algorithm>
 #include <string>
+#include <fstream>
 #include "ListaUsuarios.h"
 #include "Usuarios.h"
 #include "PublicacionesU.h"
 
-
-#include <fstream>
-
-
 using json = nlohmann::json;
 using namespace std;
 
-// Definición de las clases Publicacion y Solicitud si no están definidas en otro archivo
-struct Solicitud {
-    std::string emisor;
-    std::string receptor;
-    std::string estado;
-    Solicitud* siguiente;
-};
+// Definición de la instancia global
+extern PublicacionesU publicaciones;
 
-ListaU::ListaU() : head(nullptr), solicitudes(nullptr){
+ListaU::ListaU() : head(nullptr), solicitudes(nullptr) {
+    // Inicialización adicional si es necesaria
 }
 
 ListaU::~ListaU() {
@@ -44,7 +39,7 @@ ListaU::~ListaU() {
 
 bool ListaU::login(const string& email, const string& password) {
     Node* userNode = findUser(email);
-    if (userNode && userNode->user.getPassword() == password) {
+    if (userNode && userNode->user.getEmail() == email && userNode->user.contrasena == password) {
         return true;
     }
     return false;
@@ -75,7 +70,7 @@ void ListaU::registerUser() {
 bool ListaU::deleteAccount(const string& email, const string& password) {
     Node** current = &head;
     while (*current) {
-        if ((*current)->user.getEmail() == email && (*current)->user.getPassword() == password) {
+        if ((*current)->user.getEmail() == email && (*current)->user.contrasena == password) {
             Node* temp = *current;
             *current = (*current)->next;
             delete temp;
@@ -99,13 +94,14 @@ void ListaU::addUser(const User& user) {
     }
 }
 
-ListaU::Node* ListaU::findUser(const string& email) {
-    Node* current = head;
-    while (current != nullptr) {
-        if (current->user.getEmail() == email) {
-            return current;
+
+ListaU::Node* ListaU::findUser(const std::string& email) {
+    Node* temp = head;
+    while (temp != nullptr) {
+        if (temp->user.getEmail() == email) {
+            return temp;
         }
-        current = current->next;
+        temp = temp->next;
     }
     return nullptr;
 }
@@ -136,6 +132,31 @@ bool ListaU::enviarSolicitud(const std::string& remitente, const std::string& de
     return true;
 }
 
+
+bool ListaU::rechazarSolicitud(const std::string& remitente, const std::string& destinatario) {
+    auto itDestinatario = std::find_if(usuarios.begin(), usuarios.end(), [&](const SolicitudesU& u) {
+        return u.correo == destinatario;
+    });
+
+    if (itDestinatario != usuarios.end()) {
+        if (!itDestinatario->solicitudesRecibidas.empty() && itDestinatario->solicitudesRecibidas.top() == remitente) {
+            itDestinatario->solicitudesRecibidas.pop();
+
+            auto itRemitente = std::find_if(usuarios.begin(), usuarios.end(), [&](const SolicitudesU& u) {
+                return u.correo == remitente;
+            });
+
+            if (itRemitente != usuarios.end()) {
+                itRemitente->solicitudesEnviadas.remove(destinatario);
+            }
+            cout << "Solicitud rechazada." << endl;
+            return true;
+        }
+    }
+    cout << "No se encontró una solicitud pendiente de este usuario." << endl;
+    return false;
+}
+
 bool ListaU::aceptarSolicitud(const std::string& remitente, const std::string& destinatario) {
     Solicitud* current = solicitudes;
     while (current != nullptr) {
@@ -150,19 +171,6 @@ bool ListaU::aceptarSolicitud(const std::string& remitente, const std::string& d
     return false;
 }
 
-bool ListaU::rechazarSolicitud(const std::string& remitente, const std::string& destinatario) {
-    Solicitud* current = solicitudes;
-    while (current != nullptr) {
-        if (current->emisor == remitente && current->receptor == destinatario && current->estado == "pendiente") {
-            current->estado = "rechazada";
-            cout << "Solicitud rechazada." << endl;
-            return true;
-        }
-        current = current->siguiente;
-    }
-    cout << "No se encontró una solicitud pendiente de este usuario." << endl;
-    return false;
-}
 
 // --------------------------cargar usuarios----------------------------------------
 void ListaU::loadUsers() {
@@ -269,7 +277,7 @@ void ListaU::loadRelations() {
 }
 
 //--------------------------Carga de publicaciones admin----------------------------
-void ListaU::loadPosts() {
+void ListaU::loadPosts(PublicacionesU& publicacionesU) {
     std::string filePath;
     std::cout << "Ingrese la ruta del archivo JSON de publicaciones: ";
     std::getline(std::cin, filePath);
@@ -279,25 +287,27 @@ void ListaU::loadPosts() {
         std::cerr << "No se pudo abrir el archivo.\n";
         return;
     }
-    // Leer el contenido del archivo en una cadena
+
+    // Leer el contenido del archivo en una cadena (opcional para depuración)
     std::string fileContent((std::istreambuf_iterator<char>(inputFile)), std::istreambuf_iterator<char>());
-    // Mostrar el contenido del archivo en la consola
     std::cout << "Contenido del archivo:\n" << fileContent << std::endl;
 
     // Volver al inicio del archivo para procesar el JSON
     inputFile.clear();
     inputFile.seekg(0, std::ios::beg);
 
-
     nlohmann::json jsonData;
     inputFile >> jsonData;
 
+    // Aquí se declara cada variable antes de usarlas
     for (const auto& post : jsonData) {
         std::string email = post["correo"];
         std::string content = post["contenido"];
         std::string date = post["fecha"];
         std::string time = post["hora"];
-       
+
+        // Añadir la publicación a la lista de publicaciones
+        publicacionesU.addPost(email, content, date, time);
     }
 
     std::cout << "Publicaciones cargadas exitosamente.\n";
@@ -348,6 +358,7 @@ void ListaU::viewRequests() {
     }
 }
 
+
 void ListaU::viewFriends() {
     string email;
     cout << "Ingrese su correo: ";
@@ -362,7 +373,7 @@ void ListaU::viewFriends() {
     Solicitud* current = solicitudes;
     bool found = false;
     while (current != nullptr) {
-        if ((current->receptor == email || current->emisor == email) && current->estado == "aceptada") {
+        if ((current->receptor == email || current->emisor == email) && current->estado == "ACEPTADA") {
             string amigo = (current->receptor == email) ? current->emisor : current->receptor;
             cout << "Amigo: " << amigo << endl;
             found = true;
@@ -375,12 +386,12 @@ void ListaU::viewFriends() {
     }
 }
 
-// Aquí deberías tener la instancia de PublicacionesU
-PublicacionesU publicaciones;
+void ListaU::viewPosts(const std::string& email) {
+    publicaciones.viewPosts(email, matrizAmistad);
+     // Pasa el email y la matriz de amistad
 
-void ListaU::viewPosts() {
-    publicaciones.viewPosts();
 }
+
 
 void ListaU::createPost(const string& email) {
     publicaciones.createPost(email);
