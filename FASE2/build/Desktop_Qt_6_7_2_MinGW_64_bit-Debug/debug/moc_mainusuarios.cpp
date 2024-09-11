@@ -38,11 +38,11 @@ constexpr auto qt_meta_stringdata_CLASSMainUsuariosENDCLASS = QtMocHelpers::stri
     "MainUsuarios",
     "on_buscarB_clicked",
     "",
+    "on_salirUsuario_clicked",
     "on_USUARIO_currentChanged",
     "index",
-    "on_salirUsuario_clicked",
-    "on_ModifcarD_clicked",
-    "on_ElimanarC_clicked"
+    "on_ElimanarC_clicked",
+    "on_ModifcarD_clicked"
 );
 #else  // !QT_MOC_HAS_STRINGDATA
 #error "qtmochelpers.h not found or too old."
@@ -64,15 +64,15 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSMainUsuariosENDCLASS[] = {
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
        1,    0,   44,    2, 0x08,    1 /* Private */,
-       3,    1,   45,    2, 0x08,    2 /* Private */,
-       5,    0,   48,    2, 0x08,    4 /* Private */,
+       3,    0,   45,    2, 0x08,    2 /* Private */,
+       4,    1,   46,    2, 0x08,    3 /* Private */,
        6,    0,   49,    2, 0x08,    5 /* Private */,
        7,    0,   50,    2, 0x08,    6 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,    4,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,    5,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -90,14 +90,14 @@ Q_CONSTINIT const QMetaObject MainUsuarios::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<MainUsuarios, std::true_type>,
         // method 'on_buscarB_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'on_salirUsuario_clicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_USUARIO_currentChanged'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'on_salirUsuario_clicked'
+        // method 'on_ElimanarC_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'on_ModifcarD_clicked'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'on_ElimanarC_clicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
@@ -110,10 +110,10 @@ void MainUsuarios::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         (void)_t;
         switch (_id) {
         case 0: _t->on_buscarB_clicked(); break;
-        case 1: _t->on_USUARIO_currentChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 2: _t->on_salirUsuario_clicked(); break;
-        case 3: _t->on_ModifcarD_clicked(); break;
-        case 4: _t->on_ElimanarC_clicked(); break;
+        case 1: _t->on_salirUsuario_clicked(); break;
+        case 2: _t->on_USUARIO_currentChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 3: _t->on_ElimanarC_clicked(); break;
+        case 4: _t->on_ModifcarD_clicked(); break;
         default: ;
         }
     }

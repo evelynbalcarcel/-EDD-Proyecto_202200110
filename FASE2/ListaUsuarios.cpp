@@ -2,6 +2,11 @@
 #include "Usuarios.h"
 #include "mainusuarios.h"
 #include "MainPrincipal.h"
+#include <QDebug>
+
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
 
 using namespace std;
 
@@ -88,4 +93,39 @@ ListaU::Node* ListaU::findUser(const std::string& email) {
     return nullptr;  // Usuario no encontrado
 }
 
+//carga de Usuarios
+void ListaU::jsonUsuaios(string text){
+    // Convierte el string en un objeto JSON
+    json jsonObj = json::parse(text);
+
+    for (const auto& usuarioData : jsonObj) {
+        // Verificación de campos
+        if (usuarioData.contains("nombres") &&
+            usuarioData.contains("apellidos") &&
+            usuarioData.contains("fecha_de_nacimiento") &&
+            usuarioData.contains("correo") &&
+            usuarioData.contains("contrasena")) {
+
+            string firstName = usuarioData["nombres"];
+            string lastName = usuarioData["apellidos"];
+            string birthDate = usuarioData["fecha_de_nacimiento"];
+            string email = usuarioData["correo"];
+            string password = usuarioData["contrasena"];
+
+            // Verificar si el usuario ya existe
+            if (findUser(email)) {
+                qDebug() << "Usuario con correo " << QString::fromStdString(email) << " ya existe.";
+            } else {
+                // Crear un nuevo usuario y agregarlo a la lista
+                User newUser(firstName, lastName, birthDate, email, password);
+                addUser(newUser);  // Añadir a la lista de usuarios
+                qDebug() << "Usuario con correo " << QString::fromStdString(email) << " agregado correctamente.";
+            }
+        } else {
+            qDebug() << "Error: Carga Invalida\n";
+        }
+    }
+
+    qDebug() << "Usuarios cargados exitosamente.";
+}
 

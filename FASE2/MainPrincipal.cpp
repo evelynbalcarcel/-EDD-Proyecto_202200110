@@ -5,6 +5,7 @@
 #include <QString>
 #include "Usuarios.h"
 #include "mainusuarios.h"
+#include "mainadmin.h"
 
 MainPrincipal::MainPrincipal(QWidget *parent)
     : QMainWindow(parent)
@@ -30,8 +31,12 @@ void MainPrincipal::on_iniciosesion_clicked()
     if (listaUsuarios.login(email.toStdString(), password.toStdString())) {
         if (email == "admin@gmail.com" && password == "EDD2S2024") {
             QMessageBox::information(this, "Inicio de Sesión", "Sesión de administrador iniciada correctamente.");
-            // Llamar a la función para abrir el menú de administrador
-            // adminMenu(listaUsuarios);
+
+            // Crear y mostrar la ventana de administración
+            mainadmin *ventanaAdmin = new mainadmin(this, listaUsuarios);  // Asegúrate de que listaUsuarios sea accesible aquí y pasa como referencia si es necesario
+            ventanaAdmin->setAttribute(Qt::WA_DeleteOnClose);  // Asegura que la ventana se elimine de la memoria al cerrarse
+            ventanaAdmin->show();
+
         } else {
             // Mostrar mensaje de inicio de sesión de usuario
             QMessageBox::information(this, "Inicio de Sesión", "Sesión de usuario iniciada correctamente.");

@@ -94,4 +94,3 @@ void MainUsuarios::on_ElimanarC_clicked()
         QMessageBox::warning(this, "Error", "No se pudo eliminar la cuenta.");
     }
 }
-

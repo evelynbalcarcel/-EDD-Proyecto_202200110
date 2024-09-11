@@ -6,6 +6,8 @@
 #include <string>
 #include "Usuarios.h"
 
+using namespace std;
+
 class ListaU
 {
 public:
@@ -24,6 +26,8 @@ public:
     bool login(const std::string& email, const std::string& password);
     bool deleteAccount(const std::string& email, const std::string& password);
     void addUser(const User& user);
+
+    void jsonUsuaios(string text);
 
     // Setters
     void setFirstName(const std::string& firstName) { this->firstName = firstName; }

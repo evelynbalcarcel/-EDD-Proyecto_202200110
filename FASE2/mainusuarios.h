@@ -24,13 +24,13 @@ private slots:
 
     void on_buscarB_clicked();
 
-    void on_USUARIO_currentChanged(int index);
-
     void on_salirUsuario_clicked();
 
-    void on_ModifcarD_clicked();
+    void on_USUARIO_currentChanged(int index);
 
     void on_ElimanarC_clicked();
+
+    void on_ModifcarD_clicked();
 
 private:
     Ui::MainUsuarios *ui;

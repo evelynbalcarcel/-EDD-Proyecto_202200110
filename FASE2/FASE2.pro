@@ -13,15 +13,18 @@ SOURCES += \
     Usuarios.cpp \
     main.cpp \
     MainPrincipal.cpp \
+    mainadmin.cpp \
     mainusuarios.cpp
 
 HEADERS += \
     ListaUsuarios.h \
     MainPrincipal.h \
     Usuarios.h \
+    mainadmin.h \
     mainusuarios.h
 
 FORMS += \
+    mainadmin.ui \
     mainprincipal.ui \
     mainusuarios.ui
 
