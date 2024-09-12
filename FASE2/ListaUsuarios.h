@@ -13,18 +13,27 @@ class ListaU
 public:
     ListaU(); // Constructor
 
+/*
     struct Node {
         User user;
         Node* next;
     };
+*/
+    struct AVLNode {
+        User user;
+        AVLNode* left;
+        AVLNode* right;
+        int height;
+    };
 
-    Node* head; // Cabeza de la lista enlazada de usuarios
-    Node* findUser(const std::string& email);
+    AVLNode* root;  // Raíz del árbol AVL
+    AVLNode* findUser(const std::string& email);
 
     // Métodos principales
     void registerUser();
     bool login(const std::string& email, const std::string& password);
-    bool deleteAccount(const std::string& email, const std::string& password);
+    //bool deleteAccount(const std::string& email, const std::string& password);
+    AVLNode* deleteNode(AVLNode* root, const std::string& email);
     void addUser(const User& user);
 
     void jsonUsuaios(string text);
@@ -44,6 +53,15 @@ public:
     std::string getBirthDate() const { return birthDate; }
 
 private:
+    // Métodos AVL
+    int getHeight(AVLNode* node);
+    int getBalance(AVLNode* node);
+    AVLNode* rotateRight(AVLNode* y);
+    AVLNode* rotateLeft(AVLNode* x);
+    AVLNode* insert(AVLNode* node, const User& user);
+    AVLNode* minValueNode(AVLNode* node);
+    //AVLNode* deleteNode(AVLNode* root, const std::string& email);
+
     std::string firstName;
     std::string lastName;
     std::string email;

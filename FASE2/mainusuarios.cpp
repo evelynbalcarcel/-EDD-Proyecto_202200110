@@ -22,7 +22,7 @@ MainUsuarios::~MainUsuarios()
 
 void MainUsuarios::on_buscarB_clicked() {
     QString email = ui->BuscarCorreo->text();
-    ListaU::Node* node = listaUsuarios.findUser(email.toStdString());
+    ListaU::AVLNode* node = listaUsuarios.findUser(email.toStdString());
 
     if (node != nullptr) {
         currentUser = node;  // Asignar el usuario actual al puntero currentUser
@@ -87,7 +87,7 @@ void MainUsuarios::on_ModifcarD_clicked()
 
 void MainUsuarios::on_ElimanarC_clicked()
 {
-    if (currentUser != nullptr && listaUsuarios.deleteAccount(currentUser->user.getEmail(), currentUser->user.getPassword())) {
+    if (currentUser != nullptr && listaUsuarios.deleteNode(listaUsuarios.root, currentUser->user.getEmail())) {
         QMessageBox::information(this, "Perfil", "Cuenta eliminada correctamente.");
         close();  // Cierra la ventana si la cuenta se elimina
     } else {

@@ -37,6 +37,6 @@ private:
     ListaU& listaUsuarios;
     //User* currentUser; // mantine el usuario actual
     MainPrincipal* mainPrincipal;
-    ListaU::Node* currentUser;
+    ListaU::AVLNode* currentUser;
 };
 #endif // MAINUSUARIOS_H
