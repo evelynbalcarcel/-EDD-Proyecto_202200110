@@ -3,7 +3,7 @@
 #include "ListaUsuarios.h"
 
 #include <QMainWindow>
-
+using namespace std;
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainPrincipal;
@@ -20,13 +20,9 @@ public:
 
 private slots:
     void on_iniciosesion_clicked();
-
     void on_registrarse_clicked();
-
     void on_informacion_clicked();
-
     void on_salir_clicked();
-
     void on_INTERFAZ_currentChanged(int index);
 
 

@@ -11,13 +11,15 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
-#include <QtWidgets/QListWidget>
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTabWidget>
+#include <QtWidgets/QTableWidget>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -27,21 +29,24 @@ class Ui_mainadmin
 public:
     QTabWidget *ADMINISTRADOR;
     QWidget *tab;
-    QPushButton *BuscarA_2;
-    QLineEdit *BuscarA;
+    QPushButton *bucarUsuariosAdmin;
+    QLineEdit *BuscarAdmin;
     QLabel *orden;
-    QListWidget *OrdenB;
-    QPushButton *AplicarA;
+    QPushButton *AplicarOrdenAdmin;
+    QComboBox *comboBoxOrden;
+    QTableWidget *cargaUsuariosBuscar;
+    QPushButton *modificarUsuariosAdmin;
+    QPushButton *eliminarUsuariosAdmin;
     QWidget *tab_2;
-    QPushButton *CargaUsuarios;
+    QPushButton *CargaUsuariosJSON;
     QLabel *solicitudes;
     QLabel *publicaciones;
-    QPushButton *CargaSoli;
-    QPushButton *CargaPubli;
+    QPushButton *CargaSoliJSON;
+    QPushButton *CargaPubliJSON;
     QLabel *usuarios;
     QPlainTextEdit *cargaUsuarios;
-    QPlainTextEdit *plainTextEdit_2;
-    QPlainTextEdit *plainTextEdit_4;
+    QPlainTextEdit *cargaSolicitudes;
+    QPlainTextEdit *cargaPublicaciones;
     QWidget *tab_3;
     QLabel *arbolU;
     QLabel *listaP;
@@ -63,68 +68,101 @@ public:
         ADMINISTRADOR->setFont(font);
         tab = new QWidget();
         tab->setObjectName("tab");
-        BuscarA_2 = new QPushButton(tab);
-        BuscarA_2->setObjectName("BuscarA_2");
-        BuscarA_2->setGeometry(QRect(10, 20, 71, 31));
+        bucarUsuariosAdmin = new QPushButton(tab);
+        bucarUsuariosAdmin->setObjectName("bucarUsuariosAdmin");
+        bucarUsuariosAdmin->setGeometry(QRect(20, 30, 71, 31));
         QFont font1;
         font1.setPointSize(12);
         font1.setBold(false);
-        BuscarA_2->setFont(font1);
-        BuscarA = new QLineEdit(tab);
-        BuscarA->setObjectName("BuscarA");
-        BuscarA->setGeometry(QRect(90, 20, 221, 31));
+        bucarUsuariosAdmin->setFont(font1);
+        BuscarAdmin = new QLineEdit(tab);
+        BuscarAdmin->setObjectName("BuscarAdmin");
+        BuscarAdmin->setGeometry(QRect(100, 30, 261, 31));
+        BuscarAdmin->setFont(font1);
+        orden = new QLabel(tab);
+        orden->setObjectName("orden");
+        orden->setGeometry(QRect(380, 30, 61, 31));
         QFont font2;
         font2.setPointSize(14);
         font2.setBold(false);
-        BuscarA->setFont(font2);
-        orden = new QLabel(tab);
-        orden->setObjectName("orden");
-        orden->setGeometry(QRect(350, 20, 71, 31));
         orden->setFont(font2);
-        OrdenB = new QListWidget(tab);
-        OrdenB->setObjectName("OrdenB");
-        OrdenB->setGeometry(QRect(420, 20, 151, 31));
-        AplicarA = new QPushButton(tab);
-        AplicarA->setObjectName("AplicarA");
-        AplicarA->setGeometry(QRect(580, 20, 71, 31));
-        AplicarA->setFont(font1);
+        AplicarOrdenAdmin = new QPushButton(tab);
+        AplicarOrdenAdmin->setObjectName("AplicarOrdenAdmin");
+        AplicarOrdenAdmin->setGeometry(QRect(570, 30, 71, 31));
+        AplicarOrdenAdmin->setFont(font1);
+        comboBoxOrden = new QComboBox(tab);
+        comboBoxOrden->addItem(QString());
+        comboBoxOrden->addItem(QString());
+        comboBoxOrden->addItem(QString());
+        comboBoxOrden->setObjectName("comboBoxOrden");
+        comboBoxOrden->setGeometry(QRect(440, 30, 111, 31));
+        QFont font3;
+        font3.setPointSize(13);
+        font3.setBold(false);
+        comboBoxOrden->setFont(font3);
+        cargaUsuariosBuscar = new QTableWidget(tab);
+        if (cargaUsuariosBuscar->columnCount() < 6)
+            cargaUsuariosBuscar->setColumnCount(6);
+        QTableWidgetItem *__qtablewidgetitem = new QTableWidgetItem();
+        cargaUsuariosBuscar->setHorizontalHeaderItem(0, __qtablewidgetitem);
+        QTableWidgetItem *__qtablewidgetitem1 = new QTableWidgetItem();
+        cargaUsuariosBuscar->setHorizontalHeaderItem(1, __qtablewidgetitem1);
+        QTableWidgetItem *__qtablewidgetitem2 = new QTableWidgetItem();
+        cargaUsuariosBuscar->setHorizontalHeaderItem(2, __qtablewidgetitem2);
+        QTableWidgetItem *__qtablewidgetitem3 = new QTableWidgetItem();
+        cargaUsuariosBuscar->setHorizontalHeaderItem(3, __qtablewidgetitem3);
+        QTableWidgetItem *__qtablewidgetitem4 = new QTableWidgetItem();
+        cargaUsuariosBuscar->setHorizontalHeaderItem(4, __qtablewidgetitem4);
+        QTableWidgetItem *__qtablewidgetitem5 = new QTableWidgetItem();
+        cargaUsuariosBuscar->setHorizontalHeaderItem(5, __qtablewidgetitem5);
+        cargaUsuariosBuscar->setObjectName("cargaUsuariosBuscar");
+        cargaUsuariosBuscar->setGeometry(QRect(20, 100, 621, 261));
+        cargaUsuariosBuscar->setFont(font1);
+        modificarUsuariosAdmin = new QPushButton(tab);
+        modificarUsuariosAdmin->setObjectName("modificarUsuariosAdmin");
+        modificarUsuariosAdmin->setGeometry(QRect(470, 160, 101, 31));
+        modificarUsuariosAdmin->setFont(font1);
+        eliminarUsuariosAdmin = new QPushButton(tab);
+        eliminarUsuariosAdmin->setObjectName("eliminarUsuariosAdmin");
+        eliminarUsuariosAdmin->setGeometry(QRect(470, 210, 101, 31));
+        eliminarUsuariosAdmin->setFont(font1);
         ADMINISTRADOR->addTab(tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName("tab_2");
-        CargaUsuarios = new QPushButton(tab_2);
-        CargaUsuarios->setObjectName("CargaUsuarios");
-        CargaUsuarios->setGeometry(QRect(20, 320, 161, 31));
-        CargaUsuarios->setFont(font1);
+        CargaUsuariosJSON = new QPushButton(tab_2);
+        CargaUsuariosJSON->setObjectName("CargaUsuariosJSON");
+        CargaUsuariosJSON->setGeometry(QRect(20, 320, 161, 31));
+        CargaUsuariosJSON->setFont(font1);
         solicitudes = new QLabel(tab_2);
         solicitudes->setObjectName("solicitudes");
-        solicitudes->setGeometry(QRect(240, 10, 131, 31));
+        solicitudes->setGeometry(QRect(250, 10, 131, 31));
         publicaciones = new QLabel(tab_2);
         publicaciones->setObjectName("publicaciones");
-        publicaciones->setGeometry(QRect(450, 10, 161, 31));
-        CargaSoli = new QPushButton(tab_2);
-        CargaSoli->setObjectName("CargaSoli");
-        CargaSoli->setGeometry(QRect(220, 320, 181, 31));
-        CargaSoli->setFont(font1);
-        CargaPubli = new QPushButton(tab_2);
-        CargaPubli->setObjectName("CargaPubli");
-        CargaPubli->setGeometry(QRect(440, 320, 201, 31));
-        CargaPubli->setFont(font1);
+        publicaciones->setGeometry(QRect(470, 10, 161, 31));
+        CargaSoliJSON = new QPushButton(tab_2);
+        CargaSoliJSON->setObjectName("CargaSoliJSON");
+        CargaSoliJSON->setGeometry(QRect(220, 320, 181, 31));
+        CargaSoliJSON->setFont(font1);
+        CargaPubliJSON = new QPushButton(tab_2);
+        CargaPubliJSON->setObjectName("CargaPubliJSON");
+        CargaPubliJSON->setGeometry(QRect(440, 320, 201, 31));
+        CargaPubliJSON->setFont(font1);
         usuarios = new QLabel(tab_2);
         usuarios->setObjectName("usuarios");
-        usuarios->setGeometry(QRect(30, 10, 101, 31));
+        usuarios->setGeometry(QRect(60, 10, 101, 31));
         cargaUsuarios = new QPlainTextEdit(tab_2);
         cargaUsuarios->setObjectName("cargaUsuarios");
         cargaUsuarios->setGeometry(QRect(20, 50, 161, 261));
-        QFont font3;
-        font3.setPointSize(10);
-        font3.setBold(false);
-        cargaUsuarios->setFont(font3);
-        plainTextEdit_2 = new QPlainTextEdit(tab_2);
-        plainTextEdit_2->setObjectName("plainTextEdit_2");
-        plainTextEdit_2->setGeometry(QRect(220, 50, 181, 261));
-        plainTextEdit_4 = new QPlainTextEdit(tab_2);
-        plainTextEdit_4->setObjectName("plainTextEdit_4");
-        plainTextEdit_4->setGeometry(QRect(440, 50, 201, 261));
+        QFont font4;
+        font4.setPointSize(10);
+        font4.setBold(false);
+        cargaUsuarios->setFont(font4);
+        cargaSolicitudes = new QPlainTextEdit(tab_2);
+        cargaSolicitudes->setObjectName("cargaSolicitudes");
+        cargaSolicitudes->setGeometry(QRect(220, 50, 181, 261));
+        cargaPublicaciones = new QPlainTextEdit(tab_2);
+        cargaPublicaciones->setObjectName("cargaPublicaciones");
+        cargaPublicaciones->setGeometry(QRect(440, 50, 201, 261));
         ADMINISTRADOR->addTab(tab_2, QString());
         tab_3 = new QWidget();
         tab_3->setObjectName("tab_3");
@@ -152,7 +190,7 @@ public:
 
         retranslateUi(mainadmin);
 
-        ADMINISTRADOR->setCurrentIndex(1);
+        ADMINISTRADOR->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(mainadmin);
@@ -164,19 +202,33 @@ public:
 #if QT_CONFIG(tooltip)
         ADMINISTRADOR->setToolTip(QCoreApplication::translate("mainadmin", "<html><head/><body><p><br/></p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
-        BuscarA_2->setText(QCoreApplication::translate("mainadmin", "Buscar", nullptr));
+        bucarUsuariosAdmin->setText(QCoreApplication::translate("mainadmin", "Buscar", nullptr));
 #if QT_CONFIG(tooltip)
-        BuscarA->setToolTip(QCoreApplication::translate("mainadmin", "<html><head/><body><p>Ingrese su correo</p></body></html>", nullptr));
+        BuscarAdmin->setToolTip(QCoreApplication::translate("mainadmin", "<html><head/><body><p>Ingrese su correo</p></body></html>", nullptr));
 #endif // QT_CONFIG(tooltip)
-        BuscarA->setText(QString());
+        BuscarAdmin->setText(QString());
         orden->setText(QCoreApplication::translate("mainadmin", "Orden", nullptr));
-        AplicarA->setText(QCoreApplication::translate("mainadmin", "Aplicar", nullptr));
+        AplicarOrdenAdmin->setText(QCoreApplication::translate("mainadmin", "Aplicar", nullptr));
+        comboBoxOrden->setItemText(0, QCoreApplication::translate("mainadmin", "Inorden", nullptr));
+        comboBoxOrden->setItemText(1, QCoreApplication::translate("mainadmin", "Preorden", nullptr));
+        comboBoxOrden->setItemText(2, QCoreApplication::translate("mainadmin", "Postoden", nullptr));
+
+        QTableWidgetItem *___qtablewidgetitem = cargaUsuariosBuscar->horizontalHeaderItem(0);
+        ___qtablewidgetitem->setText(QCoreApplication::translate("mainadmin", "Nombres", nullptr));
+        QTableWidgetItem *___qtablewidgetitem1 = cargaUsuariosBuscar->horizontalHeaderItem(1);
+        ___qtablewidgetitem1->setText(QCoreApplication::translate("mainadmin", "Apellidos", nullptr));
+        QTableWidgetItem *___qtablewidgetitem2 = cargaUsuariosBuscar->horizontalHeaderItem(2);
+        ___qtablewidgetitem2->setText(QCoreApplication::translate("mainadmin", "Correo", nullptr));
+        QTableWidgetItem *___qtablewidgetitem3 = cargaUsuariosBuscar->horizontalHeaderItem(3);
+        ___qtablewidgetitem3->setText(QCoreApplication::translate("mainadmin", "Nacimiento", nullptr));
+        modificarUsuariosAdmin->setText(QCoreApplication::translate("mainadmin", "Modificar", nullptr));
+        eliminarUsuariosAdmin->setText(QCoreApplication::translate("mainadmin", "Eliminar", nullptr));
         ADMINISTRADOR->setTabText(ADMINISTRADOR->indexOf(tab), QCoreApplication::translate("mainadmin", "BUSCAR", nullptr));
-        CargaUsuarios->setText(QCoreApplication::translate("mainadmin", "CARGAR USUARIOS", nullptr));
+        CargaUsuariosJSON->setText(QCoreApplication::translate("mainadmin", "CARGAR USUARIOS", nullptr));
         solicitudes->setText(QCoreApplication::translate("mainadmin", "SOLICITUDES", nullptr));
         publicaciones->setText(QCoreApplication::translate("mainadmin", "PUBLICACIONES", nullptr));
-        CargaSoli->setText(QCoreApplication::translate("mainadmin", "CARGAR SOLICITUDES", nullptr));
-        CargaPubli->setText(QCoreApplication::translate("mainadmin", "CARGAR PUBLICACIONES", nullptr));
+        CargaSoliJSON->setText(QCoreApplication::translate("mainadmin", "CARGAR SOLICITUDES", nullptr));
+        CargaPubliJSON->setText(QCoreApplication::translate("mainadmin", "CARGAR PUBLICACIONES", nullptr));
         usuarios->setText(QCoreApplication::translate("mainadmin", "USUARIOS", nullptr));
         cargaUsuarios->setPlainText(QString());
         ADMINISTRADOR->setTabText(ADMINISTRADOR->indexOf(tab_2), QCoreApplication::translate("mainadmin", "CARGAS MASIVAS", nullptr));

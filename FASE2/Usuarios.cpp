@@ -1,5 +1,5 @@
 #include "Usuarios.h"
-#include <iostream>
+#include "ListaUsuarios.h"
 
 using namespace std;
 
@@ -8,8 +8,15 @@ User::User(const string& firstName,
            const string& birthDate,
            const string& email,
            const string& password)
-    : firstName(firstName), lastName(lastName), birthDate(birthDate), email(email), password(password) {}
+    : firstName(firstName), lastName(lastName), birthDate(birthDate), email(email), password(password) {
+    solicitudesU = new SolicitudesU(); // Inicializar SolicitudesU
+}
 
+SolicitudesU* User::getSolicitudesU() const {
+    return solicitudesU;  // Devolver la instancia de SolicitudesU
+}
+
+// Getters
 std::string User::getFirstName() const {
     return firstName;
 }
@@ -30,6 +37,7 @@ std::string User::getPassword() const {
     return password;
 }
 
+// Setters
 void User::setFirstName(const std::string& firstName) {
     this->firstName = firstName;
 }
@@ -49,3 +57,4 @@ void User::setEmail(const std::string& email) {
 void User::setPassword(const std::string& password) {
     this->password = password;
 }
+

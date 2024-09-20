@@ -19,6 +19,7 @@ SOURCES += \
 HEADERS += \
     ListaUsuarios.h \
     MainPrincipal.h \
+    Solicitudes.h \
     Usuarios.h \
     mainadmin.h \
     mainusuarios.h

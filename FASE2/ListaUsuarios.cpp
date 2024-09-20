@@ -2,7 +2,10 @@
 #include "Usuarios.h"
 #include "mainusuarios.h"
 #include "MainPrincipal.h"
+#include "Solicitudes.h"
 #include <QDebug>
+#include <stack>
+#include <list>
 
 #include <nlohmann/json.hpp>
 
@@ -11,8 +14,9 @@ using json = nlohmann::json;
 using namespace std;
 
 // Constructor
-ListaU::ListaU() : root(nullptr) {}
+ListaU::ListaU() : root(nullptr),  solicitudesU(nullptr) {}
 
+//====================== arbol de usuarios AVL ===============================
 // Obtener la altura del nodo
 int ListaU::getHeight(AVLNode* node) {
     if (node == nullptr) return 0;
@@ -94,7 +98,7 @@ ListaU::AVLNode* ListaU::insert(AVLNode* node, const User& user) {
     return node;
 }
 
-// Método para registrar un nuevo usuario
+//----------------- Método para registrar un nuevo usuario --------------------
 void ListaU::registerUser() {
     string firstName, lastName, email, password, birthDate;
 
@@ -121,7 +125,7 @@ void ListaU::registerUser() {
     cout << "Usuario registrado exitosamente.\n";
 }
 
-// Método para iniciar sesión
+//--------------------- Método para iniciar sesión ----------------------------
 bool ListaU::login(const std::string& email, const std::string& password) {
     AVLNode* userAVLNode = findUser(email);
     if (userAVLNode && userAVLNode->user.getPassword() == password) {
@@ -148,7 +152,7 @@ bool ListaU::deleteAccount(const std::string& email, const std::string& password
     return false; // Cuenta no encontrada
     }
 */
-
+//--------------------- Método para eliminar una cuenta -----------------------------
 ListaU::AVLNode* ListaU::deleteNode(AVLNode* root, const std::string& email) {
     // Paso 1: Realizar la eliminación estándar de un árbol binario de búsqueda
     if (root == nullptr)
@@ -240,7 +244,7 @@ void ListaU::addUser(const User& user) {
 }
 */
 
-// Agregar un usuario
+//-------------- Agregar un usuario ---------------------------
 void ListaU::addUser(const User& user) {
     root = insert(root, user);
 }
@@ -259,7 +263,7 @@ ListaU::Node* ListaU::findUser(const std::string& email) {
 }
 */
 
-// Buscar un usuario por correo
+//--------------------- Buscar un usuario por correo ---------------------------
 ListaU::AVLNode* ListaU::findUser(const std::string& email) {
     AVLNode* current = root;
     while (current != nullptr) {
@@ -274,7 +278,9 @@ ListaU::AVLNode* ListaU::findUser(const std::string& email) {
     return nullptr;  // Usuario no encontrado
 }
 
-// Carga de usuarios desde JSON
+//============================== CARGAS MASIVAS JSON ===========================================
+
+//--------------------- Carga de usuarios desde JSON --------------------------------
 void ListaU::jsonUsuaios(string text) {
     // Convierte el string en un objeto JSON
     json jsonObj = json::parse(text);
@@ -295,7 +301,154 @@ void ListaU::jsonUsuaios(string text) {
             addUser(newUser);
         }
     }
-
     qDebug() << "Usuarios cargados exitosamente.";
+}
+
+//------------------- Carga de solicitudes desde el JSON -----------------
+void ListaU::jsonSolicitudes(string text) {
+    // Convierte el string en un objeto JSON
+    json jsonObj = json::parse(text);
+
+    for (const auto& solicitudData : jsonObj) {
+        if (solicitudData.contains("emisor") &&
+            solicitudData.contains("receptor") &&
+            solicitudData.contains("estado")) {
+            // Crea una nueva solicitud
+            Solicitud* nuevaSolicitud = new Solicitud();
+            nuevaSolicitud->emisor = solicitudData["emisor"];
+            nuevaSolicitud->receptor = solicitudData["receptor"];
+            nuevaSolicitud->estado = solicitudData["estado"];
+            nuevaSolicitud->siguiente = solicitudesU;
+
+            // Inserta la nueva solicitud al principio de la lista
+            solicitudesU = nuevaSolicitud;
+        }
+    }
+    qDebug() << "Solicitudes cargadas exitosamente.";
+}
+
+//-------------------- Carga de Publicaciones desde el JSON --------------------------
+void ListaU::jsonPublicaciones(string text) {
+    // Convierte el string en un objeto JSON
+    json jsonObj = json::parse(text);
+
+    for (const auto& publicacionData : jsonObj) {
+        if (publicacionData.contains("correo") &&
+            publicacionData.contains("contenido") &&
+            publicacionData.contains("fecha") &&
+            publicacionData.contains("hora") &&
+            publicacionData.contains("comentarios")) {
+
+            // Crea una nueva publicación
+            Publicacion* nuevaPublicacion = new Publicacion();
+            nuevaPublicacion->correo = publicacionData["correo"];
+            nuevaPublicacion->contenido = publicacionData["contenido"];
+            nuevaPublicacion->fecha = publicacionData["fecha"];
+            nuevaPublicacion->hora = publicacionData["hora"];
+            nuevaPublicacion->comentarios = nullptr; // Inicializa la lista de comentarios
+
+            // Carga los comentarios
+            for (const auto& comentarioData : publicacionData["comentarios"]) {
+                if (comentarioData.contains("correo") &&
+                    comentarioData.contains("comentario") &&
+                    comentarioData.contains("fecha") &&
+                    comentarioData.contains("hora")) {
+
+                    Comentario* nuevoComentario = new Comentario();
+                    nuevoComentario->correo = comentarioData["correo"];
+                    nuevoComentario->comentario = comentarioData["comentario"];
+                    nuevoComentario->fecha = comentarioData["fecha"];
+                    nuevoComentario->hora = comentarioData["hora"];
+                    nuevoComentario->siguiente = nuevaPublicacion->comentarios;
+                    nuevaPublicacion->comentarios = nuevoComentario;
+                }
+            }
+
+            // Inserta la nueva publicación al principio de la lista
+            nuevaPublicacion->siguiente = publicaciones;
+            publicaciones = nuevaPublicacion;
+        }
+    }
+
+    qDebug() << "Publicaciones cargadas exitosamente.";
+}
+//====================================================================================================
+
+//=============================== MANEJO DE SOLICITUDES ===========================================
+//Usuarios
+bool ListaU::enviarSolicitud(const std::string& emisor, const std::string& receptor) {
+     // Buscar el nodo del emisor
+    AVLNode* emisorNode = findUser(emisor);
+
+     // Buscar el nodo del emisor
+    AVLNode* receptorNode = findUser(receptor);
+
+    // Verificar si alguno de los usuarios no fue encontrado
+    if (!emisorNode || !receptorNode) {
+        qDebug() << "Usuario no encontrado.";
+        return false;
+    }
+    //imprime sus correos
+    qDebug() << "Emisor encontrado: " << QString::fromStdString(emisorNode->user.getEmail());
+    qDebug() << "Receptor encontrado: " << QString::fromStdString(receptorNode->user.getEmail());
+
+    // Verificar si ya existe una solicitud pendiente
+    Solicitud* current = solicitudesU; // Acceder a la lista de solicitudes
+    while (current != nullptr) {
+        if (current->emisor == emisor && current->receptor == receptor && current->estado == "PENDIENTE") {
+            qDebug() << "Ya existe una solicitud pendiente.";
+            return false;
+        }
+        current = current->siguiente;
+    }
+
+    // Añadir la solicitud a la lista del emisor y la pila del receptor
+    emisorNode->user.getSolicitudesU()->solicitudesEnviadas.push_back(receptor);
+    receptorNode->user.getSolicitudesU()->solicitudesRecibidas.push(emisor);
+
+    // Crear nueva solicitud
+    Solicitud* nuevaSolicitud = new Solicitud{emisor, receptor, "PENDIENTE", nullptr};
+    nuevaSolicitud->siguiente = solicitudesU;
+    solicitudesU = nuevaSolicitud;
+
+    qDebug() << "Solicitud enviada.";
+    return true;
+}
+
+//solicitudes enviadas - cancelar
+bool ListaU::cancelarSolicitud(const string& receptor, const string& emisor) {
+    AVLNode* emisorNode = findUser(emisor);
+    AVLNode* receptorNode = findUser(receptor);
+
+    if (!emisorNode || !receptorNode) {
+        qDebug() << "Usuario no encontrado.";
+        return false;
+    }
+
+    // Buscar la solicitud pendiente
+    Solicitud* prev = nullptr;
+    Solicitud* current = solicitudesU; // Puntero a la cabeza de la lista de solicitudes
+
+    while (current != nullptr) {
+        if (current->emisor == emisor && current->receptor == receptor && current->estado == "PENDIENTE") {
+            if (prev == nullptr) {
+                solicitudesU = current->siguiente;
+            } else {
+                prev->siguiente = current->siguiente;
+            }
+            delete current;
+
+            receptorNode->user.getSolicitudesU()->solicitudesRecibidas.pop();
+            emisorNode->user.getSolicitudesU()->solicitudesEnviadas.remove(receptor);
+
+            qDebug() << "Solicitud cancelada.";
+            return true;
+        }
+        prev = current;
+        current = current->siguiente;
+    }
+
+    qDebug() << "No se encontró la solicitud pendiente.";
+    return false;
 }
 

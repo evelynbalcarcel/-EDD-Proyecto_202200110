@@ -6,7 +6,7 @@
 #include "Usuarios.h"
 #include "mainusuarios.h"
 #include "mainadmin.h"
-
+using namespace std;
 MainPrincipal::MainPrincipal(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainPrincipal)

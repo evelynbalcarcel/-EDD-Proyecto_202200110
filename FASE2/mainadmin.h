@@ -4,7 +4,7 @@
 #include <QDialog>
 #include "MainPrincipal.h"
 #include "ListaUsuarios.h"
-
+using namespace std;
 namespace Ui {
 class mainadmin;
 }
@@ -21,12 +21,30 @@ private slots:
 
     void on_salirAdmin_clicked();
 
-    void on_CargaUsuarios_clicked();
+    void on_cargaUsuariosBuscar_cellClicked(int row, int column);
+    void cargarUsuariosTable();
+    void cargarAVL(ListaU::AVLNode* node);
+
+    void on_CargaUsuariosJSON_clicked();
+    void on_CargaSoliJSON_clicked();
+    void on_CargaPubliJSON_clicked();
+
+    void on_bucarUsuariosAdmin_clicked();
+
+    void on_modificarUsuariosAdmin_clicked();
+
+    void on_eliminarUsuariosAdmin_clicked();
+
+    void on_comboBoxOrden_activated(int index);
+
+    void on_AplicarOrdenAdmin_clicked();
+
 
 private:
     Ui::mainadmin *ui;
     MainPrincipal* mainPrincipal;
     ListaU& listaUsuarios;
+    ListaU::AVLNode* currentUser;
 };
 
 #endif // MAINADMIN_H

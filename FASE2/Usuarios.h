@@ -2,8 +2,7 @@
 #define USUARIOS_H
 
 #include <string>
-#include <iostream>
-#include <string>
+#include "Solicitudes.h"
 
 using namespace std;
 
@@ -17,14 +16,15 @@ public:
 
     // Getters
     string getFirstName() const;
-    string getLastName()  const;
+    string getLastName() const;
     string getBirthDate() const;
-    string getEmail()     const;
-    string getPassword()  const;
+    string getEmail() const;
+    string getPassword() const;
+    SolicitudesU* getSolicitudesU() const;  // Nuevo método para obtener las solicitudes
 
     // Setters
     void setFirstName(const string& firstName);
-    void setLastName(const   string& lastName);
+    void setLastName(const string& lastName);
     void setBirthDate(const string& birthDate);
     void setEmail(const string& email);
     void setPassword(const string& password);
@@ -35,6 +35,7 @@ private:
     string birthDate;
     string email;
     string password;
+    SolicitudesU* solicitudesU;  // Instancia de SolicitudesU para manejar solicitudes
 };
 
 #endif // USUARIOS_H
