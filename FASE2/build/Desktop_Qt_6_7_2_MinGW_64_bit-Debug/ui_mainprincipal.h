@@ -152,7 +152,7 @@ public:
 
         retranslateUi(MainPrincipal);
 
-        INTERFAZ->setCurrentIndex(0);
+        INTERFAZ->setCurrentIndex(2);
 
 
         QMetaObject::connectSlotsByName(MainPrincipal);

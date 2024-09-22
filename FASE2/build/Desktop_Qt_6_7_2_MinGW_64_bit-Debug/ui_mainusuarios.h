@@ -514,7 +514,7 @@ public:
 
         retranslateUi(MainUsuarios);
 
-        USUARIO->setCurrentIndex(2);
+        USUARIO->setCurrentIndex(0);
 
 
         QMetaObject::connectSlotsByName(MainUsuarios);

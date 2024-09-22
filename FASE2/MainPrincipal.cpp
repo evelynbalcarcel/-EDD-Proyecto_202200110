@@ -76,7 +76,7 @@ void MainPrincipal::on_informacion_clicked()
                              "202200110\n"
                              "Ingeniería en Ciencias y Sistemas\n"
                              "Laboratorio Estructura de Datos\n"
-                             "PROYECTO FASE: Social Structure\n"
+                             "PROYECTO FASE2: Social Structure\n"
                              "Auxiliar: Carlos Javier Castro\n"
                              "Sección: B");
 }

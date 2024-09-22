@@ -19,7 +19,7 @@
      <x>10</x>
      <y>20</y>
      <width>671</width>
-     <height>411</height>
+     <height>421</height>
     </rect>
    </property>
    <property name="font">
@@ -242,7 +242,7 @@
       <rect>
        <x>20</x>
        <y>320</y>
-       <width>161</width>
+       <width>191</width>
        <height>31</height>
       </rect>
      </property>
@@ -285,9 +285,9 @@
     <widget class="QPushButton" name="CargaSoliJSON">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>240</x>
        <y>320</y>
-       <width>181</width>
+       <width>191</width>
        <height>31</height>
       </rect>
      </property>
@@ -304,9 +304,9 @@
     <widget class="QPushButton" name="CargaPubliJSON">
      <property name="geometry">
       <rect>
-       <x>440</x>
+       <x>460</x>
        <y>320</y>
-       <width>201</width>
+       <width>191</width>
        <height>31</height>
       </rect>
      </property>
@@ -338,7 +338,7 @@
       <rect>
        <x>20</x>
        <y>50</y>
-       <width>161</width>
+       <width>191</width>
        <height>261</height>
       </rect>
      </property>
@@ -355,21 +355,33 @@
     <widget class="QPlainTextEdit" name="cargaSolicitudes">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>460</x>
        <y>50</y>
-       <width>181</width>
+       <width>191</width>
        <height>261</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <bold>false</bold>
+      </font>
      </property>
     </widget>
     <widget class="QPlainTextEdit" name="cargaPublicaciones">
      <property name="geometry">
       <rect>
-       <x>440</x>
+       <x>240</x>
        <y>50</y>
-       <width>201</width>
+       <width>191</width>
        <height>261</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <bold>false</bold>
+      </font>
      </property>
     </widget>
    </widget>
@@ -387,7 +399,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Arbol de usuarios</string>
+      <string>Árbol de usuarios</string>
      </property>
     </widget>
     <widget class="QLabel" name="listaP">
@@ -407,7 +419,7 @@
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>310</y>
+       <y>330</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -423,6 +435,22 @@
      </property>
      <property name="text">
       <string>GENERAR REPORTES</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="cargaArbolU">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>70</y>
+       <width>251</width>
+       <height>231</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">border-color: rgb(0, 0, 0);</string>
+     </property>
+     <property name="text">
+      <string/>
      </property>
     </widget>
    </widget>
