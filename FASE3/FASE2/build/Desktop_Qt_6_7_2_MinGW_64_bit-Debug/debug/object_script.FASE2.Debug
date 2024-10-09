@@ -1,0 +1,13 @@
+debug/ListaUsuarios.o
+debug/MatrizRelaciones.o
+debug/Publicaciones.o
+debug/ReportesAdmin.o
+debug/Solicitudes.o
+debug/Usuarios.o
+debug/main.o
+debug/MainPrincipal.o
+debug/mainadmin.o
+debug/mainusuarios.o
+debug/moc_MainPrincipal.o
+debug/moc_mainadmin.o
+debug/moc_mainusuarios.o
